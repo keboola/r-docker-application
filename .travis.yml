@@ -5,5 +5,8 @@ sudo: required
 # Be strict when checking our package
 warnings_are_errors: true
 
+r_github_packages:
+ - keboola/r-application
+
 notifications:
   slack: keboola:8EW7Y0Kqvxxames1Rfp6feaE

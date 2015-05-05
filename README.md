@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/keboola/r-docker-application.svg?branch=master)](https://travis-ci.org/keboola/r-docker-application)
 
-Application "framework" which provides very basic functions related to docker-bundle.
+Application "framework" which provides very basic functions related to [docker-bundle](https://github.com/keboola/docker-bundle).
 
 ## Installation
 Package is available only on Github, so you need to use `devtools` to install the package
