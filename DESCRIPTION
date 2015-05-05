@@ -1,0 +1,14 @@
+Package: keboola.r.docker.application
+Type: Package
+Title: Keboola application with interface to docker
+Version: 1.0
+Date: 2015-05-04
+Author: Ondrej Popelka
+Maintainer: Ondrej Popelka <ondrej.popelka@keboola.com>
+Depends:
+	methods,
+	keboola.r.application
+Suggests:
+	testthat
+Description: Serves as an ancestor for applications running in docker, does nothing.
+License: MIT + file LICENSE
