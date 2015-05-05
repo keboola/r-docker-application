@@ -48,6 +48,44 @@ DockerApplication <- setRefClass(
                 debugMode <<- as.logical(configData$parameters$debug)
             }
             configData
-        }
+        },
+        
+        
+        #' Write manifest for output file. Manifest is used for the file to be stored in KBC Storage.
+        #'  
+        #' @param fileName Local file name of the file to be stored, including path.
+        #' @param fileTags Vector of file tags. Note that a tag 'rDocker' is added automatically.
+        #' @param isPublic Logical true if the file should be stored as public.
+        #' @param isPermananet Logical false if the file should be stored only temporarily (for days), otherwise it will be stored until deleted.
+        #' @param notify Logical true if members of the project should be notified about the file upload.
+        saveFileManifest = function(fileName, fileTags = vector(), isPublic = FALSE, isPermanent = TRUE, notify = FALSE)
+        {
+            fileTags = c(fileTags, 'rDocker')
+            fileConn <- file(paste0(fileName, '.manifest'))
+            lines <- c()  
+            if (isPublic) {
+                lines <- c(lines, "is_public: true")
+            } else {
+                lines <- c(lines, "is_public: false")
+            }
+            if (isPermanent) {
+                lines <- c(lines, "is_permanent: true")
+            } else {
+                lines <- c(lines, "is_permanent: false")
+            }
+            if (notify) {
+                lines <- c(lines, "notify: true")
+            } else {
+                lines <- c(lines, "notify: false")
+            }  
+            if (length(fileTags) > 0) {
+                lines <- c(lines, "tags: ")
+            }
+            for (i in 1:length(fileTags)) {
+                lines <- c(lines, paste0("  - ", fileTags[i]))
+            }
+            writeLines(lines, fileConn)
+            close(fileConn)
+        }        
     )
 )
