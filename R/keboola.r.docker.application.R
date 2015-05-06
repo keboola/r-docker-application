@@ -60,30 +60,15 @@ DockerApplication <- setRefClass(
         #' @param notify Logical true if members of the project should be notified about the file upload.
         saveFileManifest = function(fileName, fileTags = vector(), isPublic = FALSE, isPermanent = TRUE, notify = FALSE)
         {
-            fileTags = c(fileTags, 'rDocker')
-            fileConn <- file(paste0(fileName, '.manifest'))
-            lines <- c()  
-            if (isPublic) {
-                lines <- c(lines, "is_public: true")
-            } else {
-                lines <- c(lines, "is_public: false")
-            }
-            if (isPermanent) {
-                lines <- c(lines, "is_permanent: true")
-            } else {
-                lines <- c(lines, "is_permanent: false")
-            }
-            if (notify) {
-                lines <- c(lines, "notify: true")
-            } else {
-                lines <- c(lines, "notify: false")
-            }  
+            content = list()
+            content[['is_public']] <- isPublic
+            content[['is_permanent']] <- isPermanent
+            content[['notify']] <- notify
             if (length(fileTags) > 0) {
-                lines <- c(lines, "tags: ")
+                content[['tags']] <- fileTags
             }
-            for (i in 1:length(fileTags)) {
-                lines <- c(lines, paste0("  - ", fileTags[i]))
-            }
+            json <- jsonlite::toJSON(x = content, auto_unbox = TRUE, pretty = TRUE)
+            fileConn <- file(paste0(fileName, '.manifest'))
             writeLines(lines, fileConn)
             close(fileConn)
         }        
