@@ -58,7 +58,7 @@ DockerApplication <- setRefClass(
         #' @param isPublic Logical true if the file should be stored as public.
         #' @param isPermananet Logical false if the file should be stored only temporarily (for days), otherwise it will be stored until deleted.
         #' @param notify Logical true if members of the project should be notified about the file upload.
-        saveFileManifest = function(fileName, fileTags = vector(), isPublic = FALSE, isPermanent = TRUE, notify = FALSE)
+        writeFileManifest = function(fileName, fileTags = vector(), isPublic = FALSE, isPermanent = TRUE, notify = FALSE)
         {
             content = list()
             content[['is_public']] <- isPublic
@@ -69,7 +69,7 @@ DockerApplication <- setRefClass(
             }
             json <- jsonlite::toJSON(x = content, auto_unbox = TRUE, pretty = TRUE)
             fileConn <- file(paste0(fileName, '.manifest'))
-            writeLines(lines, fileConn)
+            writeLines(json, fileConn)
             close(fileConn)
         }        
     )

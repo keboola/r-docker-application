@@ -77,3 +77,44 @@ test_that("config file format exception", {
     )
     file.remove(configFile)    
 })
+
+test_that("file manifest 1", {
+    someFile <- file.path(tempdir(), 'someFile.txt')
+    app <- DockerApplication$new(dirname(someFile))
+    
+    app$writeFileManifest(someFile, fileTags = c('foo', 'bar'), isPublic = TRUE, isPermanent = FALSE, notify = TRUE)
+    manifestFile = paste0(someFile, '.manifest')
+    data <- readChar(manifestFile, file.info(manifestFile)$size)
+    config <- jsonlite::fromJSON(data)
+    
+    expect_equal(
+        config,
+        list(
+            'is_public' = TRUE,
+            'is_permanent' = FALSE,
+            'notify' = TRUE,
+            'tags' = c('foo', 'bar')
+        )
+    )
+    file.remove(manifestFile)
+})
+
+test_that("file manifest 2", {
+    someFile <- file.path(tempdir(), 'someFile.txt')
+    app <- DockerApplication$new(dirname(someFile))
+    
+    app$writeFileManifest(someFile)
+    manifestFile = paste0(someFile, '.manifest')
+    data <- readChar(manifestFile, file.info(manifestFile)$size)
+    config <- jsonlite::fromJSON(data)
+    
+    expect_equal(
+        config,
+        list(
+            'is_public' = FALSE,
+            'is_permanent' = TRUE,
+            'notify' = FALSE
+        )
+    )
+    file.remove(manifestFile)
+})
