@@ -118,3 +118,9 @@ test_that("file manifest 2", {
     )
     file.remove(manifestFile)
 })
+
+
+test_that("run without init", {
+    app <- DockerApplication$new()
+    app$logDebug("test")
+})

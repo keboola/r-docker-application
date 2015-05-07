@@ -18,6 +18,8 @@ DockerApplication <- setRefClass(
         #'  will be read from command line argument.
         #' @exportMethod
         initialize = function(args = NULL) {
+            callSuper(FALSE)
+            
             if (is.null(args)) {
                 args <- commandArgs(trailingOnly = TRUE)
             }
