@@ -46,6 +46,8 @@ DockerApplication <- setRefClass(
             })
             if (!is.null(configData$parameters$debug)) {
                 debugMode <<- as.logical(configData$parameters$debug)
+            } else {
+                debugMode <<- FALSE
             }
             configData
         },
