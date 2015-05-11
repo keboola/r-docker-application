@@ -16,9 +16,9 @@ test_that("config file", {
     '
     write(file = configFile, x = configData)
     app <- DockerApplication$new(dirname(configFile))
-    configData <- app$readConfig()
+    app$readConfig()
     
-    expect_equal(configData, app$configData)
+    configData <- app$configData
       
     # verify config structure
     expect_false(is.null(configData$parameters))
@@ -32,6 +32,7 @@ test_that("config file", {
 
 test_that("config directory exception", {
     configFile <- file.path(paste(tempdir()), 'config.json')
+    file.remove(configFile)
     app <- DockerApplication$new(dirname(configFile))
     expect_that(
         app$readConfig(),
@@ -72,7 +73,7 @@ test_that("config file format exception", {
     app <- DockerApplication$new(dirname(configFile))
     
     expect_that(
-        configData <- app$readConfig(),
+        app$readConfig(),
         throws_error()
     )
     file.remove(configFile)    

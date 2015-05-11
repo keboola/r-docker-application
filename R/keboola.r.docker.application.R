@@ -31,8 +31,8 @@ DockerApplication <- setRefClass(
        
         #' Read configuration file
         #' 
-        #' @return List with parsed configuration file structure,
-        #'  also accessible as configData property.
+        #' List with parsed configuration file structure is accessible as configData property.
+        #' @return logical TRUE
         #' @exportMethod
         readConfig = function() {
             configFile <- file.path(normalizePath(dataDir, mustWork = TRUE), 'config.json')
@@ -51,7 +51,7 @@ DockerApplication <- setRefClass(
             } else {
                 debugMode <<- FALSE
             }
-            configData
+            TRUE
         },
         
         
