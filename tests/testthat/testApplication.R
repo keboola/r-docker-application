@@ -120,6 +120,26 @@ test_that("file manifest 2", {
     file.remove(manifestFile)
 })
 
+test_that("file manifest 3", {
+    someFile <- file.path(tempdir(), 'someFile.txt')
+    app <- DockerApplication$new(dirname(someFile))
+    
+    app$writeFileManifest(someFile, fileTags = c('foo'), isPublic = TRUE, isPermanent = FALSE, notify = TRUE)
+    manifestFile = paste0(someFile, '.manifest')
+    data <- readChar(manifestFile, file.info(manifestFile)$size)
+    config <- jsonlite::fromJSON(data)
+    
+    expect_equal(
+        config,
+        list(
+            'is_public' = TRUE,
+            'is_permanent' = FALSE,
+            'notify' = TRUE,
+            'tags' = c('foo')
+        )
+    )
+    file.remove(manifestFile)
+})
 
 test_that("run without init", {
     app <- DockerApplication$new()

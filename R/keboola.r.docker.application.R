@@ -65,13 +65,13 @@ DockerApplication <- setRefClass(
         writeFileManifest = function(fileName, fileTags = vector(), isPublic = FALSE, isPermanent = TRUE, notify = FALSE)
         {
             content = list()
-            content[['is_public']] <- isPublic
-            content[['is_permanent']] <- isPermanent
-            content[['notify']] <- notify
+            content[['is_public']] <- jsonlite::unbox(isPublic)
+            content[['is_permanent']] <- jsonlite::unbox(isPermanent)
+            content[['notify']] <- jsonlite::unbox(notify)
             if (length(fileTags) > 0) {
                 content[['tags']] <- fileTags
             }
-            json <- jsonlite::toJSON(x = content, auto_unbox = TRUE, pretty = TRUE)
+            json <- jsonlite::toJSON(x = content, auto_unbox = FALSE, pretty = TRUE)
             fileConn <- file(paste0(fileName, '.manifest'))
             writeLines(json, fileConn)
             close(fileConn)
