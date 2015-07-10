@@ -2,6 +2,7 @@
 #'  inside Docker with interface to docker-bundle.
 #' @import methods
 #' @import keboola.r.application
+#' @import jsonlite
 #' @export DockerApplication
 #' @exportClass DockerApplication
 DockerApplication <- setRefClass(

@@ -7,6 +7,7 @@ Author: Ondrej Popelka
 Maintainer: Ondrej Popelka <ondrej.popelka@keboola.com>
 Depends:
 	methods,
+	jsonlite,
 	keboola.r.application
 Suggests:
 	testthat
