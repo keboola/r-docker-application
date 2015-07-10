@@ -2,5 +2,6 @@
 
 export(DockerApplication)
 exportClasses(DockerApplication)
+import(jsonlite)
 import(keboola.r.application)
 import(methods)
