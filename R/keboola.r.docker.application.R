@@ -172,7 +172,7 @@ DockerApplication <- setRefClass(
         getExpectedOutputTables = function()
         {
             tables <- .self$configData$storage$output$tables
-            tables$full_path <- file.path(.self$dataDir, 'in', 'tables', tables$source)
+            tables$full_path <- file.path(.self$dataDir, 'out', 'tables', tables$source)
             return(tables)
         }
     )
