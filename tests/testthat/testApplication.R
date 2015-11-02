@@ -76,7 +76,7 @@ test_that("config file format exception", {
         app$readConfig(),
         throws_error()
     )
-    file.remove(configFile)    
+    file.remove(configFile)
 })
 
 test_that("file manifest 1", {
@@ -170,7 +170,7 @@ test_that("config accessors", {
     
     files <- app$getInputFiles()
     expect_equal(5, length(files))
-    expect_equal('21702.strip.print.gif', substr(files[1], 72, 92))
+    expect_equal('21702.strip.print.gif', substr(files[1], nchar(files[1]) - 20, nchar(files[1])))
     
     file <- app$getFileManifest(files[1])
     expect_equal(151971405, file$id)
