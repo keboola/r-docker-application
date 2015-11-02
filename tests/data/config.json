@@ -1,0 +1,75 @@
+{
+    "storage": {
+        "input": {
+            "files": [
+                {
+                    "tags": [
+                        "dilbert"
+                    ],
+                    "processed_tags": []
+                },
+                {
+                    "tags": [
+                        "xkcd"
+                    ],
+                    "processed_tags": []
+                }
+            ],
+            "tables": [
+                {
+                    "source": "in.c-main.test",
+                    "destination": "sample.csv",
+                    "columns": [],
+                    "where_values": [],
+                    "where_operator": "eq"
+                },
+                {
+                    "source": "in.c-main.test2",
+                    "destination": "fooBar.csv",
+                    "columns": [],
+                    "where_values": [],
+                    "where_operator": "eq"
+                }
+            ]
+        },
+        "output": {
+            "tables": [
+                {
+                    "source": "results.csv",
+                    "destination": "out.c-main.test",
+                    "incremental": false,
+                    "primary_key": [],
+                    "delete_where_values": [],
+                    "delete_where_operator": "eq"
+                },
+                {
+                    "source": "results-new.csv",
+                    "destination": "out.c-main.test2",
+                    "incremental": false,
+                    "primary_key": [],
+                    "delete_where_values": [],
+                    "delete_where_operator": "eq"
+                }
+            ],
+            "files": [
+                {
+                    "source": "processed.png",
+                    "tags": [
+                        "processed-file"
+                    ],
+                    "is_public": false,
+                    "is_permanent": false,
+                    "is_encrypted": true,
+                    "notify": false
+                }
+            ]
+        }
+    },
+    "parameters": {
+        "fooBar": {
+            "foo": 42,
+            "bar": 24
+        },
+        "baz": "bazBar"
+    }
+}
