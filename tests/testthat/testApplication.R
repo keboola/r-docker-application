@@ -145,3 +145,46 @@ test_that("run without init", {
     app <- DockerApplication$new()
     app$logDebug("test")
 })
+
+test_that("config accessors", {
+    app <- DockerApplication$new(KBC_DATA_DIR)
+    app$readConfig()
+    
+    params <- app$getParameters()
+    expect_equal('bazBar', params$baz)
+    expect_equal(42, params$fooBar$foo)
+    expect_equal(24, params$fooBar$bar)
+
+    tables <- app$getInputTables()
+    expect_equal(2, nrow(tables))
+    expect_equal('in.c-main.test', tables[which(tables$destination == 'sample.csv'), 'source'])
+    expect_equal('in.c-main.test2', tables[which(tables$destination == 'fooBar.csv'), 'source'])
+    expect_equal(c(TRUE, TRUE), file.exists(tables$full_path))
+    
+    table <- app$getTableManifest('sample.csv')
+    expect_equal('in.c-main.test', table$id)
+    expect_equal(13, length(table$columns))
+    
+    table2 <- app$getTableManifest('sample')
+    expect_equal(table, table2)
+    
+    files <- app$getInputFiles()
+    expect_equal(5, length(files))
+    expect_equal('21702.strip.print.gif', substr(files[1], 72, 92))
+    
+    file <- app$getFileManifest(files[1])
+    expect_equal(151971405, file$id)
+    expect_equal('21702.strip.print.gif', file$name)
+    expect_equal('dilbert', file$tags)
+    file2 <- app$getFileManifest('151971405_21702.strip.print.gif')
+    expect_equal(file, file2)
+    
+    files <- app$getExpectedOutputFiles()
+    expect_equal(1, nrow(files))
+    expect_equal('processed.png', files[1, 'source'])
+    
+    tables <- app$getExpectedOutputTables()
+    expect_equal(2, nrow(tables))
+    expect_equal('results.csv', tables[1, 'source'])
+    expect_equal('results-new.csv', tables[2, 'source'])
+})

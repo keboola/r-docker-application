@@ -16,7 +16,7 @@ DockerApplication <- setRefClass(
         #' Constructor.
         #'
         #' @param Optional name of data directory, if not supplied then it
-        #'  will be read from command line argument.
+        #'  will be read from command line argument or environment KBC_DATA_DIR.
         #' @exportMethod
         initialize = function(args = NULL) {
             callSuper(FALSE)
@@ -25,6 +25,9 @@ DockerApplication <- setRefClass(
                 args <- commandArgs(trailingOnly = TRUE)
             }
             dataDir <<- args[1]
+            if (empty(dataDir)) {
+                dataDir <<- Sys.getenv("KBC_DATA_DIR")
+            }
             if (empty(dataDir)) {
                 stop("Data directory must be entered as first argument.")
             }
@@ -59,10 +62,11 @@ DockerApplication <- setRefClass(
         #' Write manifest for output file. Manifest is used for the file to be stored in KBC Storage.
         #'  
         #' @param fileName Local file name of the file to be stored, including path.
-        #' @param fileTags Vector of file tags. Note that a tag 'rDocker' is added automatically.
+        #' @param fileTags Vector of file tags.
         #' @param isPublic Logical true if the file should be stored as public.
         #' @param isPermananet Logical false if the file should be stored only temporarily (for days), otherwise it will be stored until deleted.
         #' @param notify Logical true if members of the project should be notified about the file upload.
+        #' @exportMethod
         writeFileManifest = function(fileName, fileTags = vector(), isPublic = FALSE, isPermanent = TRUE, notify = FALSE)
         {
             content = list()
@@ -76,6 +80,99 @@ DockerApplication <- setRefClass(
             fileConn <- file(paste0(fileName, '.manifest'))
             writeLines(json, fileConn)
             close(fileConn)
-        }        
+        },
+        
+        
+        #' Get arbitrary parameters specified in the configuration file.
+        #' 
+        #' @return list
+        #' @exportMethod 
+        getParameters = function()
+        {
+            return(configData$parameters)
+        },
+        
+        
+        #' Get names of input files. Returns fully classified pathnames.
+        #'
+        #' @return character 
+        #' @exportMethod 
+        getInputFiles = function()
+        {
+            files <- list.files(file.path(.self$dataDir, 'in', 'files'))
+            files <- files[which(substr(files, nchar(files) - 8, nchar(files)) != '.manifest')]
+            files <- file.path(.self$dataDir, 'in', 'files', files)
+            return(sort(files))
+        },
+        
+        
+        #' Get additional file information stored in file manifest
+        #' 
+        #' @param string Destination table name (name of .csv file).
+        #' @return list 
+        #' @exportMethod
+        getFileManifest = function(fileName)
+        {
+            baseDir <- file.path(.self$dataDir, 'in', 'files')
+            if (substr(fileName, 0, nchar(baseDir)) != baseDir) {
+                fileName <- file.path(baseDir, fileName)
+            }
+            manifestPath <- paste0(fileName, '.manifest')
+            data <- readChar(manifestPath, file.info(manifestPath)$size)
+            manifest <- jsonlite::fromJSON(data)
+            return(manifest)
+        },
+               
+        
+        #' Get files which are supposed to be returned when the application finishes.
+        #' 
+        #' @return data.frame
+        #' @exportMethod 
+        getExpectedOutputFiles = function()
+        {
+            files <- .self$configData$storage$output$files
+            return(files)
+        },
+        
+        
+        #' Get input tables specified in the configuration file. Tables are identified by 
+        #'  their destination (.csv file) or full_path.
+        #' 
+        #' @return data.frame
+        #' @exportMethod
+        getInputTables = function()
+        {
+            tables <- .self$configData$storage$input$tables
+            tables$full_path <- file.path(.self$dataDir, 'in', 'tables', tables$destination)
+            return(tables)
+        },
+        
+        
+        #' Get additional table information stored in table manifest
+        #' 
+        #' @param string Destination table name (name of .csv file).
+        #' @return list
+        #' @exportMethod
+        getTableManifest = function(tableName)
+        {
+            if (substr(tableName, nchar(tableName) - 3, nchar(tableName)) != '.csv') {
+                tableName <- paste0(tableName, '.csv')
+            }
+            manifestPath <- file.path(.self$dataDir, 'in', 'tables', paste0(tableName, '.manifest'))
+            data <- readChar(manifestPath, file.info(manifestPath)$size)
+            manifest <- jsonlite::fromJSON(data)
+            return(manifest)
+        },
+        
+        
+        #' Get tables which are supposed to be returned when the application finishes.
+        #' 
+        #' @return data.frame
+        #' @exportMethod 
+        getExpectedOutputTables = function()
+        {
+            files <- .self$configData$storage$output$tables
+            return(files)
+        }
     )
 )
