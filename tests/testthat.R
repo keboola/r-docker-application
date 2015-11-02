@@ -1,5 +1,7 @@
 library(testthat)
 
+KBC_DATA_DIR = '../data/'
+
 # override with config if any
 if (file.exists("config.R")) {
     source("config.R")
