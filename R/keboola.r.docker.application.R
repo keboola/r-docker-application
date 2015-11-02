@@ -92,7 +92,7 @@ DockerApplication <- setRefClass(
         {
             content = list()
             if (length(primaryKey) > 0) {
-                content[['primary_key']] <- primary_key
+                content[['primary_key']] <- primaryKey
             }
             if (length(indexedColumns) > 0) {
                 content[['indexed_columns']] <- indexedColumns
