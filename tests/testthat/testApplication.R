@@ -141,6 +141,25 @@ test_that("file manifest 3", {
     file.remove(manifestFile)
 })
 
+test_that("table manifest 1", {
+    someFile <- file.path(tempdir(), 'some-table.csv')
+    app <- DockerApplication$new(dirname(someFile))
+    
+    app$writeTableManifest(someFile, 'out.c-main.some-table', primaryKey = c('foo', 'bar'))
+    manifestFile = paste0(someFile, '.manifest')
+    data <- readChar(manifestFile, file.info(manifestFile)$size)
+    config <- jsonlite::fromJSON(data)
+    
+    expect_equal(
+        config,
+        list(
+            'destination' = 'out.c-main.some-table',
+            'primary_key' = c('foo', 'bar')
+        )
+    )
+    file.remove(manifestFile)
+})
+
 test_that("run without init", {
     app <- DockerApplication$new()
     app$logDebug("test")

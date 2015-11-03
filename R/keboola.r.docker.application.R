@@ -85,12 +85,14 @@ DockerApplication <- setRefClass(
         
         #' Write manifest for output table Manifest is used for the table to be stored in KBC Storage.
         #'  
+        #' @param destination String name of the table in Storage.
         #' @param primaryKey Vector of columns used for primary key.
         #' @param indexedColumns Vector of columns which are indexed.
         #' @exportMethod
-        writeTableManifest = function(fileName, primaryKey = vector(), indexedColumns = vector())
+        writeTableManifest = function(fileName, destination, primaryKey = vector(), indexedColumns = vector())
         {
             content = list()
+            content[['destination']] <- jsonlite::unbox(destination)
             if (length(primaryKey) > 0) {
                 content[['primary_key']] <- primaryKey
             }
