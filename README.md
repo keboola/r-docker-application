@@ -1,8 +1,8 @@
-# R Docker application ancestor
+# R Docker application
 
 [![Build Status](https://travis-ci.org/keboola/r-docker-application.svg?branch=master)](https://travis-ci.org/keboola/r-docker-application)
 
-Application "framework" which provides very basic functions related to [docker-bundle](https://github.com/keboola/docker-bundle).
+Application "framework" which provides basic functions related to [docker-bundle](https://github.com/keboola/docker-bundle).
 
 ## Installation
 Package is available only on Github, so you need to use `devtools` to install the package
@@ -30,3 +30,5 @@ app->readConfig()
 print(app$configData$parameters)
 
 ```
+
+Also see the [wiki](https://sites.google.com/a/keboola.com/wiki/home/keboola-connection/devel-space/integrating-with-kbc/custom-applications/guide-for-r-applications) for more examples.
