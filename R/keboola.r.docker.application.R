@@ -1,8 +1,6 @@
 #' Application which serves as a backend for component which runs 
 #'  inside Docker with interface to docker-bundle.
-#' @import methods
-#' @import keboola.r.application
-#' @import jsonlite
+#' @import methods keboola.r.application jsonlite
 #' @export DockerApplication
 #' @exportClass DockerApplication
 DockerApplication <- setRefClass(
@@ -13,12 +11,13 @@ DockerApplication <- setRefClass(
         'configData' = 'list'
     ),
     methods = list(
-        #' Constructor.
-        #'
-        #' @param Optional name of data directory, if not supplied then it
-        #'  will be read from command line argument or environment KBC_DATA_DIR.
-        #' @exportMethod
         initialize = function(args = NULL) {
+            "Constructor.
+            \\subsection{Parameters}{\\itemize{
+            \\item{\\code{args} Optional name of data directory, if not supplied then it
+            will be read from command line argument or environment KBC_DATA_DIR.}
+            }}
+            \\subsection{Return Value}{Response body - either list or string in case the body cannot be parsed as JSON.}"
             callSuper(FALSE)
             
             if (is.null(args)) {
@@ -32,13 +31,11 @@ DockerApplication <- setRefClass(
                 stop("Data directory must be entered as first argument.")
             }
         },
-       
-        #' Read configuration file
-        #' 
-        #' List with parsed configuration file structure is accessible as configData property.
-        #' @return logical TRUE
-        #' @exportMethod
+
         readConfig = function() {
+            "Read configuration file.
+            List with parsed configuration file structure is accessible as configData property.
+            \\subsection{Return Value}{TRUE}"
             configFile <- file.path(normalizePath(dataDir, mustWork = TRUE), 'config.json')
             if (!file.exists(configFile)) {
                 stop(paste0("Configuration file not found ", configFile))
@@ -58,17 +55,18 @@ DockerApplication <- setRefClass(
             TRUE
         },
         
-        
-        #' Write manifest for output file. Manifest is used for the file to be stored in KBC Storage.
-        #'  
-        #' @param fileName Local file name of the file to be stored, including path.
-        #' @param fileTags Vector of file tags.
-        #' @param isPublic Logical true if the file should be stored as public.
-        #' @param isPermananet Logical false if the file should be stored only temporarily (for days), otherwise it will be stored until deleted.
-        #' @param notify Logical true if members of the project should be notified about the file upload.
-        #' @exportMethod
-        writeFileManifest = function(fileName, fileTags = vector(), isPublic = FALSE, isPermanent = TRUE, notify = FALSE)
-        {
+        writeFileManifest = function(fileName, fileTags = vector(), isPublic = FALSE, isPermanent = TRUE, notify = FALSE) {
+            "Write manifest for output file. Manifest is used for the file to be stored in KBC Storage.
+            List with parsed configuration file structure is accessible as configData property.
+            \\subsection{Parameters}{\\itemize{
+            \\item{\\code{fileName} Local file name of the file to be stored, including path.}
+            \\item{\\code{fileTags} Vector of file tags.}
+            \\item{\\code{isPublic} Logical true if the file should be stored as public.}
+            \\item{\\code{isPermananet} Logical false if the file should be stored only temporarily (for days)
+            otherwise it will be stored until deleted.}
+            \\item{\\code{notify} Logical TRUE if members of the project should be notified about the file upload.}
+            }}
+            \\subsection{Return Value}{TRUE}"
             content = list()
             content[['is_public']] <- jsonlite::unbox(isPublic)
             content[['is_permanent']] <- jsonlite::unbox(isPermanent)
@@ -80,17 +78,17 @@ DockerApplication <- setRefClass(
             fileConn <- file(paste0(fileName, '.manifest'))
             writeLines(json, fileConn)
             close(fileConn)
+            TRUE
         },
         
-        
-        #' Write manifest for output table Manifest is used for the table to be stored in KBC Storage.
-        #'  
-        #' @param destination String name of the table in Storage.
-        #' @param primaryKey Vector of columns used for primary key.
-        #' @param indexedColumns Vector of columns which are indexed.
-        #' @exportMethod
-        writeTableManifest = function(fileName, destination, primaryKey = vector(), indexedColumns = vector())
-        {
+        writeTableManifest = function(fileName, destination, primaryKey = vector(), indexedColumns = vector()) {
+            "Write manifest for output table Manifest is used for the table to be stored in KBC Storage.
+            \\subsection{Parameters}{\\itemize{
+            \\item{\\code{destination} String name of the table in Storage.}
+            \\item{\\code{primaryKey} Vector of columns used for primary key.}
+            \\item{\\code{indexedColumns} Vector of columns which are indexed.}
+            }}
+            \\subsection{Return Value}{TRUE}"
             content = list()
             content[['destination']] <- jsonlite::unbox(destination)
             if (length(primaryKey) > 0) {
@@ -103,39 +101,30 @@ DockerApplication <- setRefClass(
             fileConn <- file(paste0(fileName, '.manifest'))
             writeLines(json, fileConn)
             close(fileConn)
+            TRUE
         },        
         
-        
-        #' Get arbitrary parameters specified in the configuration file.
-        #' 
-        #' @return list
-        #' @exportMethod 
-        getParameters = function()
-        {
+        getParameters = function() {
+            "Get arbitrary parameters specified in the configuration file.
+            \\subsection{Return Value}{List with parameters}"
             return(configData$parameters)
         },
         
-        
-        #' Get names of input files. Returns fully classified pathnames.
-        #'
-        #' @return character 
-        #' @exportMethod 
-        getInputFiles = function()
-        {
+        getInputFiles = function() {
+            "Get names of input files. Returns fully classified pathnames.
+            \\subsection{Return Value}{List with file names}"
             files <- list.files(file.path(.self$dataDir, 'in', 'files'))
             files <- files[which(substr(files, nchar(files) - 8, nchar(files)) != '.manifest')]
             files <- file.path(.self$dataDir, 'in', 'files', files)
             return(sort(files))
         },
         
-        
-        #' Get additional file information stored in file manifest
-        #' 
-        #' @param string Destination table name (name of .csv file).
-        #' @return list 
-        #' @exportMethod
-        getFileManifest = function(fileName)
-        {
+        getFileManifest = function(fileName) {
+            "Get additional file information stored in file manifest.
+            \\subsection{Parameters}{\\itemize{
+            \\item{\\code{fileName} Destination file name (without .manifest extension).}
+            }}
+            \\subsection{Return Value}{List with manifest options}"
             baseDir <- file.path(.self$dataDir, 'in', 'files')
             if (substr(fileName, 0, nchar(baseDir)) != baseDir) {
                 fileName <- file.path(baseDir, fileName)
@@ -146,38 +135,28 @@ DockerApplication <- setRefClass(
             return(manifest)
         },
                
-        
-        #' Get files which are supposed to be returned when the application finishes.
-        #' 
-        #' @return data.frame
-        #' @exportMethod 
-        getExpectedOutputFiles = function()
-        {
+        getExpectedOutputFiles = function() {
+            "Get files which are supposed to be returned when the application finishes.
+            \\subsection{Return Value}{data.frame with output files}"
             files <- .self$configData$storage$output$files
             return(files)
         },
         
-        
-        #' Get input tables specified in the configuration file. Tables are identified by 
-        #'  their destination (.csv file) or full_path.
-        #' 
-        #' @return data.frame
-        #' @exportMethod
-        getInputTables = function()
-        {
+        getInputTables = function() {
+            "Get input tables specified in the configuration file. Tables are identified by
+            their destination (.csv file) or full_path.
+            \\subsection{Return Value}{data.frame with output tables}"
             tables <- .self$configData$storage$input$tables
             tables$full_path <- file.path(.self$dataDir, 'in', 'tables', tables$destination)
             return(tables)
         },
         
-        
-        #' Get additional table information stored in table manifest
-        #' 
-        #' @param string Destination table name (name of .csv file).
-        #' @return list
-        #' @exportMethod
-        getTableManifest = function(tableName)
-        {
+        getTableManifest = function(tableName) {
+            "Get additional table information stored in table manifest.
+            \\subsection{Parameters}{\\itemize{
+            \\item{\\code{fileName} Destination table name (name of .csv file).}
+            }}
+            \\subsection{Return Value}{List with manifest options}"
             if (substr(tableName, nchar(tableName) - 3, nchar(tableName)) != '.csv') {
                 tableName <- paste0(tableName, '.csv')
             }
@@ -187,13 +166,12 @@ DockerApplication <- setRefClass(
             return(manifest)
         },
         
-        
-        #' Get tables which are supposed to be returned when the application finishes.
-        #' 
-        #' @return data.frame
-        #' @exportMethod 
-        getExpectedOutputTables = function()
-        {
+        getExpectedOutputTables = function() {
+            "Get tables which are supposed to be returned when the application finishes.
+            \\subsection{Parameters}{\\itemize{
+            \\item{\\code{fileName} Destination table name (name of .csv file).}
+            }}
+            \\subsection{Return Value}{data.frame list with expected output tables.}"
             tables <- .self$configData$storage$output$tables
             tables$full_path <- file.path(.self$dataDir, 'out', 'tables', tables$source)
             return(tables)

@@ -6,10 +6,12 @@ Date: 2015-05-04
 Author: Ondrej Popelka
 Maintainer: Ondrej Popelka <ondrej.popelka@keboola.com>
 Depends:
-	methods,
-	jsonlite,
-	keboola.r.application
+    methods,
+    jsonlite,
+    keboola.r.application
 Suggests:
-	testthat
-Description: Serves as an ancestor for applications running in docker, does nothing.
+    testthat
+Description: Serves as an ancestor for applications running in docker, does
+    nothing.
 License: MIT + file LICENSE
+RoxygenNote: 5.0.0.9000
