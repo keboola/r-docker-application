@@ -81,21 +81,18 @@ DockerApplication <- setRefClass(
             TRUE
         },
         
-        writeTableManifest = function(fileName, destination, primaryKey = vector(), indexedColumns = vector()) {
+        writeTableManifest = function(fileName, destination, primaryKey = vector()) {
             "Write manifest for output table Manifest is used for the table to be stored in KBC Storage.
             \\subsection{Parameters}{\\itemize{
+            \\item{\\code{fileName} Local file name of the CSV with table data.}
             \\item{\\code{destination} String name of the table in Storage.}
             \\item{\\code{primaryKey} Vector of columns used for primary key.}
-            \\item{\\code{indexedColumns} Vector of columns which are indexed.}
             }}
             \\subsection{Return Value}{TRUE}"
             content = list()
             content[['destination']] <- jsonlite::unbox(destination)
             if (length(primaryKey) > 0) {
                 content[['primary_key']] <- primaryKey
-            }
-            if (length(indexedColumns) > 0) {
-                content[['indexed_columns']] <- indexedColumns
             }
             json <- jsonlite::toJSON(x = content, auto_unbox = FALSE, pretty = TRUE)
             fileConn <- file(paste0(fileName, '.manifest'))
@@ -154,7 +151,7 @@ DockerApplication <- setRefClass(
         getTableManifest = function(tableName) {
             "Get additional table information stored in table manifest.
             \\subsection{Parameters}{\\itemize{
-            \\item{\\code{fileName} Destination table name (name of .csv file).}
+            \\item{\\code{tableName} Destination table name (name of .csv file).}
             }}
             \\subsection{Return Value}{List with manifest options}"
             if (substr(tableName, nchar(tableName) - 3, nchar(tableName)) != '.csv') {
@@ -168,10 +165,7 @@ DockerApplication <- setRefClass(
         
         getExpectedOutputTables = function() {
             "Get tables which are supposed to be returned when the application finishes.
-            \\subsection{Parameters}{\\itemize{
-            \\item{\\code{fileName} Destination table name (name of .csv file).}
-            }}
-            \\subsection{Return Value}{data.frame list with expected output tables.}"
+            \\subsection{Return Value}{data.frame with expected output tables.}"
             tables <- .self$configData$storage$output$tables
             tables$full_path <- file.path(.self$dataDir, 'out', 'tables', tables$source)
             return(tables)
