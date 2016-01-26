@@ -79,6 +79,15 @@ test_that("config file format exception", {
     file.remove(configFile)
 })
 
+test_that("invalid directory", {
+    app <- DockerApplication$new('non-existent-dir')
+    
+    expect_that(
+        app$readConfig(),
+        throws_error()
+    )
+})
+
 test_that("file manifest 1", {
     someFile <- file.path(tempdir(), 'someFile.txt')
     app <- DockerApplication$new(dirname(someFile))

@@ -36,7 +36,7 @@ DockerApplication <- setRefClass(
             "Read configuration file.
             List with parsed configuration file structure is accessible as configData property.
             \\subsection{Return Value}{TRUE}"
-            configFile <- file.path(normalizePath(dataDir, mustWork = TRUE), 'config.json')
+            configFile <- file.path(normalizePath(dataDir, mustWork = FALSE), 'config.json')
             if (!file.exists(configFile)) {
                 stop(paste0("Configuration file not found ", configFile))
             }
