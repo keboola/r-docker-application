@@ -15,7 +15,7 @@ DockerApplication <- setRefClass(
             "Constructor.
             \\subsection{Parameters}{\\itemize{
             \\item{\\code{args} Optional name of data directory, if not supplied then it
-            will be read from command line argument or environment KBC_DATA_DIR.}
+            will be read from command line argument or environment KBC_DATADIR.}
             }}
             \\subsection{Return Value}{Response body - either list or string in case the body cannot be parsed as JSON.}"
             callSuper(FALSE)
@@ -25,7 +25,7 @@ DockerApplication <- setRefClass(
             }
             dataDir <<- args[1]
             if (empty(dataDir)) {
-                dataDir <<- Sys.getenv("KBC_DATA_DIR")
+                dataDir <<- Sys.getenv("KBC_DATADIR")
             }
             if (empty(dataDir)) {
                 stop("Data directory must be entered as first argument.")

@@ -32,7 +32,6 @@ test_that("config file", {
 
 test_that("config directory exception", {
     configFile <- file.path(paste(tempdir()), 'config.json')
-    file.remove(configFile)
     app <- DockerApplication$new(dirname(configFile))
     expect_that(
         app$readConfig(),
@@ -170,12 +169,13 @@ test_that("table manifest 1", {
 })
 
 test_that("run without init", {
-    app <- DockerApplication$new()
+    app <- DockerApplication$new(KBC_DATADIR)
+    # no error should be thrown
     app$logDebug("test")
 })
 
 test_that("config accessors", {
-    app <- DockerApplication$new(KBC_DATA_DIR)
+    app <- DockerApplication$new(KBC_DATADIR)
     app$readConfig()
     
     params <- app$getParameters()

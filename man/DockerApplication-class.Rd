@@ -17,10 +17,7 @@ Application which serves as a backend for component which runs
 \subsection{Return Value}{data.frame with output files}}
 
 \item{\code{getExpectedOutputTables()}}{Get tables which are supposed to be returned when the application finishes.
-\subsection{Parameters}{\itemize{
-\item{\code{fileName} Destination table name (name of .csv file).}
-}}
-\subsection{Return Value}{data.frame list with expected output tables.}}
+\subsection{Return Value}{data.frame with expected output tables.}}
 
 \item{\code{getFileManifest(fileName)}}{Get additional file information stored in file manifest.
 \subsection{Parameters}{\itemize{
@@ -40,7 +37,7 @@ their destination (.csv file) or full_path.
 
 \item{\code{getTableManifest(tableName)}}{Get additional table information stored in table manifest.
 \subsection{Parameters}{\itemize{
-\item{\code{fileName} Destination table name (name of .csv file).}
+\item{\code{tableName} Destination table name (name of .csv file).}
 }}
 \subsection{Return Value}{List with manifest options}}
 
@@ -66,12 +63,11 @@ otherwise it will be stored until deleted.}
 }}
 \subsection{Return Value}{TRUE}}
 
-\item{\code{writeTableManifest(fileName, destination, primaryKey = vector(),
-  indexedColumns = vector())}}{Write manifest for output table Manifest is used for the table to be stored in KBC Storage.
+\item{\code{writeTableManifest(fileName, destination, primaryKey = vector())}}{Write manifest for output table Manifest is used for the table to be stored in KBC Storage.
 \subsection{Parameters}{\itemize{
+\item{\code{fileName} Local file name of the CSV with table data.}
 \item{\code{destination} String name of the table in Storage.}
 \item{\code{primaryKey} Vector of columns used for primary key.}
-\item{\code{indexedColumns} Vector of columns which are indexed.}
 }}
 \subsection{Return Value}{TRUE}}
 }}
