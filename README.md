@@ -31,4 +31,4 @@ print(app$configData$parameters)
 
 ```
 
-Also see the See [development guide](http://developers.keboola.com/extend/custom-science/r/) for help with KBC integration. for more examples.
+Also see the See [development guide](http://developers.keboola.com/extend/custom-science/r/) for help with KBC integration and for more examples.
