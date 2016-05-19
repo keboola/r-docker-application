@@ -44,6 +44,7 @@ DockerApplication <- setRefClass(
             
             tryCatch({
                 configData <<- jsonlite::fromJSON(data)
+                print(configData)
             }, error = function (e) {
                 stop(paste0("Failed to parse JSON configuration ", e$message));
             })
@@ -105,6 +106,12 @@ DockerApplication <- setRefClass(
             "Get arbitrary parameters specified in the configuration file.
             \\subsection{Return Value}{List with parameters}"
             return(configData$parameters)
+        },
+        
+        getAction = function() {
+            "Get  action parameter passed to the configuration
+            \\subsection{Return Value}{Action parameter value}"
+            return(configData$action)
         },
         
         getInputFiles = function() {

@@ -11,7 +11,8 @@ test_that("config file", {
                 "scriptParameters": {
                     "fooBar": "baz"
                 }
-            }
+            },
+            "action": "test"
         }
     '
     write(file = configFile, x = configData)
@@ -25,6 +26,7 @@ test_that("config file", {
     expect_false(is.null(configData$parameters$debug))
     expect_false(is.null(configData$parameters$script))
     expect_false(is.null(configData$parameters$scriptParameters))
+    expect_false(is.null(configData$action))
     
     expect_true(app$debugMode)
     file.remove(configFile)

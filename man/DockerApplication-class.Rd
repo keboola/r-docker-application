@@ -13,6 +13,9 @@ Application which serves as a backend for component which runs
 \section{Methods}{
 
 \describe{
+\item{\code{getAction()}}{Get  action parameter passed to the configuration
+\subsection{Return Value}{Action parameter value}}
+
 \item{\code{getExpectedOutputFiles()}}{Get files which are supposed to be returned when the application finishes.
 \subsection{Return Value}{data.frame with output files}}
 

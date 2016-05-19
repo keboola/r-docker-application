@@ -71,5 +71,6 @@
             "bar": 24
         },
         "baz": "bazBar"
-    }
+    },
+    "action": "test"
 }
