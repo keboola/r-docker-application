@@ -217,4 +217,7 @@ test_that("config accessors", {
     expect_equal(2, nrow(tables))
     expect_equal('results.csv', tables[1, 'source'])
     expect_equal('results-new.csv', tables[2, 'source'])
+    
+    action <- app$getAction()
+    expect_equal('test', action)
 })
