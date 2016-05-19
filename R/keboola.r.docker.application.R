@@ -107,6 +107,12 @@ DockerApplication <- setRefClass(
             return(configData$parameters)
         },
         
+        getAction = function() {
+            "Get  action parameter passed to the configuration
+            \\subsection{Return Value}{Action parameter value}"
+            return(configData$action)
+        },
+        
         getInputFiles = function() {
             "Get names of input files. Returns fully classified pathnames.
             \\subsection{Return Value}{List with file names}"
