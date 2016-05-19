@@ -44,7 +44,6 @@ DockerApplication <- setRefClass(
             
             tryCatch({
                 configData <<- jsonlite::fromJSON(data)
-                print(configData)
             }, error = function (e) {
                 stop(paste0("Failed to parse JSON configuration ", e$message));
             })
