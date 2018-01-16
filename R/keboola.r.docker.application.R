@@ -81,7 +81,7 @@ DockerApplication <- setRefClass(
             TRUE
         },
         
-        writeTableManifest = function(fileName, destination, primaryKey = vector()) {
+        writeTableManifest = function(fileName, destination = NULL, primaryKey = vector()) {
             "Write manifest for output table Manifest is used for the table to be stored in KBC Storage.
             \\subsection{Parameters}{\\itemize{
             \\item{\\code{fileName} Local file name of the CSV with table data.}
@@ -90,7 +90,9 @@ DockerApplication <- setRefClass(
             }}
             \\subsection{Return Value}{TRUE}"
             content = list()
-            content[['destination']] <- jsonlite::unbox(destination)
+            if (!is.null(destination)) {
+                content[['destination']] <- jsonlite::unbox(destination)
+            }
             if (length(primaryKey) > 0) {
                 content[['primary_key']] <- primaryKey
             }
