@@ -178,7 +178,7 @@ test_that("table manifest maximal", {
         destination = 'out.c-main.some-table', columns = c('foo', 'bar'), 
         incremental = TRUE, metadata = list('bar' = 'kochba'),
         columnMetadata = list('foo' = list('name' = 'gogo')), 
-        deleteWhere = list('column' = 'pale', 'values' = c('horse', 'inn'), 'operator' = 'neq'))
+        deleteWhere = list('column' = 'pale', 'values' = c('horse', 'inn'), 'operator' = 'ne'))
     manifestFile = paste0(someFile, '.manifest')
     data <- readChar(manifestFile, file.info(manifestFile)$size)
     metadata = list()
@@ -195,7 +195,7 @@ test_that("table manifest maximal", {
         'column_metadata' = columnMetadata,
         'delete_where_column' = jsonlite::unbox('pale'),
         'delete_where_values' = c('horse', 'inn'),
-        'delete_where_operator' = jsonlite::unbox('neq')
+        'delete_where_operator' = jsonlite::unbox('ne')
     )
     jsText <- as.character(jsonlite::toJSON(target, auto_unbox = FALSE, pretty = TRUE))
     jsText <- gsub("[\r\n]", "", jsText)
