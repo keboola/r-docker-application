@@ -187,7 +187,7 @@ DockerApplication <- setRefClass(
                     op = deleteWhere[['operator']]
                 }
                 if (op != 'eq' && op != 'ne') {
-                    stop('Delete-where operator must be "eq" or "neq".')
+                    stop('Delete-where operator must be "eq" or "ne".')
                 }
                 manifest[['delete_where_column']] <- jsonlite::unbox(deleteWhere[['column']])
                 manifest[['delete_where_values']] <- deleteWhere[['values']]
