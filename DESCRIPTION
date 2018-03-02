@@ -1,18 +1,16 @@
 Package: keboola.r.docker.application
 Type: Package
-Title: Keboola application with interface to docker
-Version: 1.0
-Date: 2015-05-04
-Author: Ondrej Popelka
-Maintainer: Ondrej Popelka <ondrej.popelka@keboola.com>
+Title: Interface for Keboola Connection component
+Version: 2.0.0
+Date: 2018-03-01
+Author: Keboola
+Maintainer: Keboola <devel@keboola.com>
 Depends:
     methods,
-    jsonlite,
-    keboola.r.application
+    jsonlite
 Suggests:
     testthat
-Description: Serves as an ancestor for applications running in docker, does
-    nothing.
+Description: Serves as an interfarace for KBC components, provides 
+    methods for working with configuration files and manifests.
 License: MIT + file LICENSE
-RoxygenNote: 5.0.1
-Remotes: keboola/r-application
+RoxygenNote: 6.0.1

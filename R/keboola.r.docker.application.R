@@ -1,11 +1,11 @@
 #' Application which serves as a backend for component which runs 
 #'  inside Docker with interface to docker-bundle.
-#' @import methods keboola.r.application jsonlite
+#' @import methods jsonlite
 #' @export DockerApplication
 #' @exportClass DockerApplication
 DockerApplication <- setRefClass(
     'DockerApplication',
-    contains = c("Application"),
+    contains = c("Component"),
     fields = list(
         'dataDir' = 'character',
         'configData' = 'list'
@@ -81,28 +81,121 @@ DockerApplication <- setRefClass(
             TRUE
         },
         
-        writeTableManifest = function(fileName, destination = NULL, primaryKey = vector()) {
+        writeTableManifest = function(fileName, destination = NULL, primaryKey = vector(),
+                                      columns = vector(), incremental = FALSE, metadata = list(),
+                                      columnMetadata = list(), deleteWhere = list()) {
             "Write manifest for output table Manifest is used for the table to be stored in KBC Storage.
             \\subsection{Parameters}{\\itemize{
             \\item{\\code{fileName} Local file name of the CSV with table data.}
             \\item{\\code{destination} String name of the table in Storage.}
             \\item{\\code{primaryKey} Vector of columns used for primary key.}
+            \\item{\\code{columns} Vector of columns names for headless CSV file.}
+            \\item{\\code{incremental} Set to TRUE to enable incremental loading.}
+            \\item{\\code{metadata} Key value list of table metadata.}
+            \\item{\\code{columnMetadata} List indexed by column name of key-value list of column metadata.}
+            \\item{\\code{deleteWhere} List with items 'column', 'values', 'operator' to specify rows to delete.}
             }}
             \\subsection{Return Value}{TRUE}"
             content = list()
             if (!is.null(destination)) {
+                if (typeof(destination) != 'character') {
+                    stop("Destination must be a string.")
+                }
                 content[['destination']] <- jsonlite::unbox(destination)
             }
             if (length(primaryKey) > 0) {
+                if (typeof(primaryKey) != 'character') {
+                    stop("PrimaryKey must be a character vector")
+                }
                 content[['primary_key']] <- primaryKey
             }
+            if (length(columns) > 0) {
+                content[['columns']] <- columns
+            }
+            if (incremental) {
+                content[['incremental']] <- jsonlite::unbox(incremental)
+            }
+            content <- .self$processMetadata(content, metadata)
+            content <- .self$processColumnMetadata(content, columnMetadata)
+            content <- .self$processDeleteWhere(content, deleteWhere)
             json <- jsonlite::toJSON(x = content, auto_unbox = FALSE, pretty = TRUE)
             fileConn <- file(paste0(fileName, '.manifest'))
             writeLines(json, fileConn)
             close(fileConn)
             TRUE
-        },        
+        },
         
+        processMetadata = function(manifest, metadata) {
+            if (typeof(metadata) != 'list') {
+                stop("Table metadata must be a list.");
+            }
+            if (length(metadata) > 0) {
+                manifest[['metadata']] = list()
+                i = 1
+                for (name in names(metadata)) {
+                    manifest[['metadata']][[i]] = c(
+                        manifest[['metadata']], 
+                        list('key' = jsonlite::unbox(name),
+                             'value' = jsonlite::unbox(metadata[[name]]))
+                    )
+                    i = i + 1
+                }
+            }
+            return(manifest)
+        },
+        
+        processColumnMetadata = function(manifest, columnMetadata) {
+            if (typeof(columnMetadata) != 'list') {
+                stop("Column metadata must be a list.")
+            }
+            if (length(columnMetadata) > 0) {
+                manifest[['column_metadata']] = list()
+                for (column in names(columnMetadata)) {
+                    manifest[['column_metadata']][[column]] = list()
+                    if (typeof(columnMetadata[[column]]) != 'list') {
+                        stop("Column metadata must be a list of lists.")
+                    }
+                    i = 1
+                    for (name in names(columnMetadata[[column]])) {
+                        manifest[['column_metadata']][[column]][[i]] <- list('key' = jsonlite::unbox(name),
+                                 'value' = jsonlite::unbox(columnMetadata[[column]][[name]]))
+                        i = i + 1
+                    }
+                }
+            }
+            return(manifest)
+        },
+        
+        processDeleteWhere = function(manifest, deleteWhere) {
+            if (typeof(deleteWhere) != 'list') {
+                stop("Delete-where specification must be a list.")
+            }
+            if (length(deleteWhere) > 0) {
+                if (is.null(deleteWhere[['column']]) ||
+                    is.null(deleteWhere[['values']])) {
+                    stop("Delete-where list must contain items 'column' and 'values'.")
+                }
+                if (typeof(deleteWhere[['values']]) != 'character') {
+                    stop('Delete-where values must be a character vector')
+                }
+                if (typeof(deleteWhere[['column']]) != 'character') {
+                    stop('Delete-where column must be a character')
+                }
+                if (is.null(deleteWhere[['operator']])) {
+                    op = 'eq'
+                } else {
+                    op = deleteWhere[['operator']]
+                }
+                if (op != 'eq' && op != 'neq') {
+                    stop('Delete-where operator must be "eq" or "neq".')
+                }
+                manifest[['delete_where_column']] <- jsonlite::unbox(deleteWhere[['column']])
+                manifest[['delete_where_values']] <- deleteWhere[['values']]
+                manifest[['delete_where_operator']] <- jsonlite::unbox(deleteWhere[['operator']])
+            }
+            return(manifest)
+        },
+
         getParameters = function() {
             "Get arbitrary parameters specified in the configuration file.
             \\subsection{Return Value}{List with parameters}"

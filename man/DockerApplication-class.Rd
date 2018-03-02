@@ -2,8 +2,8 @@
 % Please edit documentation in R/keboola.r.docker.application.R
 \docType{class}
 \name{DockerApplication-class}
-\alias{DockerApplication}
 \alias{DockerApplication-class}
+\alias{DockerApplication}
 \title{Application which serves as a backend for component which runs 
  inside Docker with interface to docker-bundle.}
 \description{
@@ -66,11 +66,18 @@ otherwise it will be stored until deleted.}
 }}
 \subsection{Return Value}{TRUE}}
 
-\item{\code{writeTableManifest(fileName, destination, primaryKey = vector())}}{Write manifest for output table Manifest is used for the table to be stored in KBC Storage.
+\item{\code{writeTableManifest(fileName, destination = NULL, primaryKey = vector(),
+  columns = vector(), incremental = FALSE, metadata = list(),
+  columnMetadata = list(), deleteWhere = list())}}{Write manifest for output table Manifest is used for the table to be stored in KBC Storage.
 \subsection{Parameters}{\itemize{
 \item{\code{fileName} Local file name of the CSV with table data.}
 \item{\code{destination} String name of the table in Storage.}
 \item{\code{primaryKey} Vector of columns used for primary key.}
+\item{\code{columns} Vector of columns names for headless CSV file.}
+\item{\code{incremental} Set to TRUE to enable incremental loading.}
+\item{\code{metadata} Key value list of table metadata.}
+\item{\code{columnMetadata} List indexed by column name of key-value list of column metadata.}
+\item{\code{deleteWhere} List with items 'column', 'values', 'operator' to specify rows to delete.}
 }}
 \subsection{Return Value}{TRUE}}
 }}

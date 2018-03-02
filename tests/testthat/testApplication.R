@@ -151,23 +151,116 @@ test_that("file manifest 3", {
     file.remove(manifestFile)
 })
 
-test_that("table manifest 1", {
-    someFile <- file.path(tempdir(), 'some-table.csv')
+test_that("table manifest minimal", {
+    someFile <- file.path(tempdir(), 'some-table-1.csv')
     app <- DockerApplication$new(dirname(someFile))
     
-    app$writeTableManifest(someFile, 'out.c-main.some-table', primaryKey = c('foo', 'bar'))
+    app$writeTableManifest(someFile, primaryKey = c('foo', 'bar'))
     manifestFile = paste0(someFile, '.manifest')
     data <- readChar(manifestFile, file.info(manifestFile)$size)
     config <- jsonlite::fromJSON(data)
+    file.copy(manifestFile, "D:/sync/")
     
     expect_equal(
         config,
         list(
-            'destination' = 'out.c-main.some-table',
             'primary_key' = c('foo', 'bar')
         )
     )
     file.remove(manifestFile)
+})
+
+test_that("table manifest maximal", {
+    someFile <- file.path(tempdir(), 'some-table-2.csv')
+    app <- DockerApplication$new(dirname(someFile))
+    
+    app$writeTableManifest(someFile, primaryKey = c('foo'),
+        destination = 'out.c-main.some-table', columns = c('foo', 'bar'), 
+        incremental = TRUE, metadata = list('bar' = 'kochba'),
+        columnMetadata = list('foo' = list('name' = 'gogo')), 
+        deleteWhere = list('column' = 'pale', 'values' = c('horse', 'inn'), 'operator' = 'neq'))
+    manifestFile = paste0(someFile, '.manifest')
+    data <- readChar(manifestFile, file.info(manifestFile)$size)
+    metadata = list()
+    metadata[[1]] = list('key' = jsonlite::unbox('bar'), 'value' = jsonlite::unbox('kochba'))
+    columnMetadata = list()
+    columnMetadata[['foo']] = list()
+    columnMetadata[['foo']][[1]] = list('key' = jsonlite::unbox('name'), 'value' = jsonlite::unbox('gogo'))
+    target = list(
+        'destination' = jsonlite::unbox('out.c-main.some-table'),
+        'primary_key' = c('foo'),
+        'columns' = c('foo', 'bar'),
+        'incremental' = jsonlite::unbox(TRUE),
+        'metadata' = metadata,
+        'column_metadata' = columnMetadata,
+        'delete_where_column' = jsonlite::unbox('pale'),
+        'delete_where_values' = c('horse', 'inn'),
+        'delete_where_operator' = jsonlite::unbox('neq')
+    )
+    jsText <- as.character(jsonlite::toJSON(target, auto_unbox = FALSE, pretty = TRUE))
+    jsText <- gsub("[\r\n]", "", jsText)
+    data <- gsub("[\r\n]", "", data)
+    expect_equal(
+        data,
+        jsText
+    )
+    file.remove(manifestFile)
+})
+
+test_that("table manifest destination error", {
+    someFile <- file.path(tempdir(), 'some-table.csv')
+    app <- DockerApplication$new(dirname(someFile))
+    expect_error(
+        app$writeTableManifest(someFile, destination = list('out.c-main.some-table'))
+    )
+})
+
+test_that("table manifest primary key error", {
+    someFile <- file.path(tempdir(), 'some-table.csv')
+    app <- DockerApplication$new(dirname(someFile))
+    expect_error(
+        app$writeTableManifest(someFile, primaryKey = FALSE)
+    )
+})
+
+test_that("table manifest metadata error", {
+    someFile <- file.path(tempdir(), 'some-table.csv')
+    app <- DockerApplication$new(dirname(someFile))
+    expect_error(
+        app$writeTableManifest(someFile, metadata = c("a", "b"))
+    )
+})
+
+test_that("table manifest column metadata error", {
+    someFile <- file.path(tempdir(), 'some-table.csv')
+    app <- DockerApplication$new(dirname(someFile))
+    expect_error(
+        app$writeTableManifest(someFile, columnMetadata = c("a", "b"))
+    )
+})
+
+test_that("table manifest column metadata error 2", {
+    someFile <- file.path(tempdir(), 'some-table.csv')
+    app <- DockerApplication$new(dirname(someFile))
+    expect_error(
+        app$writeTableManifest(someFile, columnMetadata = list("a" = "b"))
+    )
+})
+
+test_that("table manifest delete where error", {
+    someFile <- file.path(tempdir(), 'some-table.csv')
+    app <- DockerApplication$new(dirname(someFile))
+    expect_error(
+        app$writeTableManifest(someFile, deleteWhere = list("a" = "b"))
+    )
+})
+
+test_that("table manifest delete where error 2", {
+    someFile <- file.path(tempdir(), 'some-table.csv')
+    app <- DockerApplication$new(dirname(someFile))
+    expect_error(
+        app$writeTableManifest(someFile, deleteWhere = list("values" = c("b"), "column" = "a", "operator" = "invalid"))
+    )
 })
 
 test_that("run without init", {
