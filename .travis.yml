@@ -1,12 +1,7 @@
 language: r
-
 sudo: required
-
-# Be strict when checking our package
 warnings_are_errors: true
-
-r_github_packages:
- - keboola/r-application
-
 notifications:
-  slack: keboola:8EW7Y0Kqvxxames1Rfp6feaE
+  email: false
+  slack:
+    secure: SyJ/8QQRMMAmE78QKk4SbSp+7nAQm7kyaZaeM5bkvYI/S1MK5BEuDfp1dfC1y1JJ+h6dZC5oi+6+Wkox1SGTGnFHFV4//ih/b2gTtBiqe6S6KemdEFaCs9pIou3lJoVnRNeTVTh88vQYH9W9Qm4hgHQ6wk8+ygOQ0Cp2+aPYhJo=
