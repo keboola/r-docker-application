@@ -2,13 +2,13 @@
 
 [![Build Status](https://travis-ci.org/keboola/r-docker-application.svg?branch=master)](https://travis-ci.org/keboola/r-docker-application)
 
-Application "framework" which provides basic functions related to [docker-bundle](https://github.com/keboola/docker-bundle).
+Helper library for KBC component development. The library provides basic functions related to [docker Runner](https://developers.keboola.com/extend/docker-runner/) 
+[common interface](https://developers.keboola.com/extend/common-interface/).
 
 ## Installation
 Package is available only on Github, so you need to use `devtools` to install the package
 ```
-library('devtools')
-install_github('keboola/r-docker-application', ref = 'master')
+devtools::install_github('keboola/r-docker-application', ref = 'master')
 ```
 
 ## Examples
@@ -31,4 +31,4 @@ print(app$configData$parameters)
 
 ```
 
-Also see the See [development guide](http://developers.keboola.com/extend/custom-science/r/) for help with KBC integration and for more examples.
+Also see the See [development guide](https://developers.keboola.com/extend/component/implementation/r/) for help with extending KBC and for more examples.
