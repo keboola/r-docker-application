@@ -32,3 +32,7 @@ print(app$configData$parameters)
 ```
 
 Also see the See [development guide](https://developers.keboola.com/extend/component/implementation/r/) for help with extending KBC and for more examples.
+
+## License
+
+MIT licensed, see [LICENSE](./LICENSE) file.
